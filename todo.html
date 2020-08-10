@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .doneStyle {
+        color: red;
+        text-decoration: line-through;
+      }
+      .btns > * {
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <input type="text" v-model="addValue" /><input
+        type="button"
+        value="addTo"
+        @click="addTodoList"
+      />
+      <ul>
+        <li
+          :class="{doneStyle:item.done}"
+          v-for="(item, index) in filterData"
+          :key="index"
+          @click="doneToggle(item)"
+        >
+          {{item.value}}
+        </li>
+      </ul>
+      <div class="btns">
+        <template v-for="(item, index) in btnNames">
+          <span v-if="item === current">{{item}}</span>
+          <a href="#" v-else @click="current = item">{{item}}</a>
+        </template>
+        <!-- <span>ALL</span>
+        <a href="#">DONE</a>
+        <a href="#">ACTIVE</a> -->
+        <span>{{doneTotal}}/{{total}}</span>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+      var app = new Vue({
+        el: "#app",
+        data() {
+          return {
+            listData: [
+              { value: "HTML", done: false },
+              { value: "css", done: true },
+              { value: "JavaScript", done: false },
+            ],
+            addValue: "",
+            btnNames: ["ALL", "DONE", "ACTIVE"],
+            current: "ALL",
+          };
+        },
+        computed: {
+          total() {
+            return this.listData.length;
+          },
+          doneTotal() {
+            return this.listData.filter((item) => item.done).length;
+          },
+          filterData() {
+            switch (this.current) {
+              case "DONE":
+                return this.listData.filter((item) => item.done);
+              case "ACTIVE":
+                return this.listData.filter((item) => !item.done);
+              default:
+                return this.listData;
+            }
+          },
+        },
+        methods: {
+          addTodoList() {
+            this.listData.push({
+              value: this.addValue,
+              done: false,
+            });
+          },
+          doneToggle(item) {
+            item.done = !item.done;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
